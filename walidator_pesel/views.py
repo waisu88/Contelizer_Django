@@ -1,29 +1,59 @@
 from django.shortcuts import render
+from django.core.exceptions import ValidationError
 from .forms import PeselForm
+from datetime import datetime
 
 
-def pesel_view(request):
+def pesel_view(request):   
     if request.method == 'POST':
+        error_message = None
         form = PeselForm(request.POST)
+        pesel_status = 'niepoprawny'
+        sex = None
+        date_of_birth = None
         if form.is_valid():
-            numer_pesel = form.cleaned_data['numer_pesel']
-            # błąd jeśli jest większe od 20 i mniejsze od 33 ale 4:6 jest większe od 24
-            print(numer_pesel[2:4])
-            # musi być większe od 0 i mniejsze od 13
-            # lub większe od 20 i mniejsze od 33
-            # lub większe od 80 i mniejsze od 83
-            print(numer_pesel[4:6])
-            # rok 1900 nie jest przestępny, 2000 już jest
-            # czyli jeśli 008 albo 009 to musimy sprawdzić czy liczba dni w lutym się zgadza
-            # trzeba sprawdzić, ktore miesiące ile mają dni i napisac logikę
-            # trzeba sprawdzić sumę kontrolną ze wzoru jako ostateczną
+            pesel_number = form.cleaned_data['numer_pesel']
+    
+            year = int(pesel_number[0:2])
+            month = int(pesel_number[2:4])
+            day = int(pesel_number[4:6])
+            
+            if 0 < month < 13:
+                year += 1900
+            elif 20 < month < 33:
+                year += 2000
+                month -= 20
+            elif 80 < month < 93:
+                year += 1800
+                month -= 80
+            else:
+                error_message = "Wprowadzony miesiąc w numerze PESEL jest nieprawidłowy."
 
-            # ostatni krok to przekazanie daty urodzenia i płci do widoku
+        if error_message is None:
+            try:
+                date_of_birth = datetime(year, month, day)  # Sprawdzenie poprawności daty
+            except ValueError:
+                error_message = "Data w numerze PESEL jest nieprawidłowa."
 
-            # może najbardziej odpowiednim podejściem jest rozbicie tego według miesięcy..?
+        if error_message is None: 
+            pesel_digits = [int(digit) for digit in pesel_number]
+            weights = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3]
+            checksum = sum(pesel_digits[i] * weights[i] for i in range(10))
+            control_digit = (10 - (checksum % 10)) % 10
 
+            if control_digit != pesel_digits[10]:
+                error_message = "Cyfra kontrolna numeru PESEL jest nieprawidłowa."
+                
 
-            return render(request, 'success.html', {'pesel': numer_pesel})
+        if error_message is None:
+            if pesel_digits[9] % 2 == 1:
+                sex = 'mężczyzna'
+            else:
+                sex = 'kobieta'
+            pesel_status = 'poprawny'
+
+        return render(request, 'pesel_results.html', {'pesel': pesel_number, 'poprawnosc': pesel_status, 'wyjatki': error_message, 'data_urodzenia': date_of_birth, 'plec': sex})
+
     else:
         form = PeselForm()
 
