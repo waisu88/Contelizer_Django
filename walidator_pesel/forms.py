@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 
 
 class PeselForm(forms.Form):
-    numer_pesel = forms.CharField(
+    pesel_number = forms.CharField(
         max_length=11,
         min_length=11,
         label="Numer PESEL",
@@ -15,7 +15,7 @@ class PeselForm(forms.Form):
     )
 
     def clean_numer_pesel(self):
-        numer_pesel = self.cleaned_data.get('numer_pesel')
-        if not numer_pesel.isdigit():
+        pesel_number = self.cleaned_data.get('numer_pesel')
+        if not pesel_number.isdigit():
             raise ValidationError("Numer PESEL może zawierać tylko cyfry.")
-        return numer_pesel
+        return pesel_number

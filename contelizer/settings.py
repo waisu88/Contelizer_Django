@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'walidator_pesel.apps.WalidatorPeselConfig',
+    'tekst_szufla.apps.TekstSzuflaConfig'
 ]
 
 MIDDLEWARE = [
@@ -60,6 +61,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             'walidator_pesel/templates/walidator_pesel',
+            'tekst_szufla/templates/tekst_szufla',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -122,6 +124,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

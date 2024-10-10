@@ -6,13 +6,14 @@
 </head>
 <body>
     <h1>Informacje o numerze PESEL</h1>
-    <p><strong>Numer PESEL:</strong> {{ pesel }}</p>
-    <p><strong>Status: </strong> {{ poprawnosc }} </p>
-    {% if poprawnosc == 'poprawny' %}
-        <p><strong>Data urodzenia:</strong> {{ data_urodzenia|date:"d-m-Y" }}</p>
-        <p><strong>Płeć:</strong> {{ plec }}</p>
+    <p><strong>Numer PESEL:</strong> {{ pesel_number }}</p>
+    <p><strong>Status: </strong> {{ pesel_status }} </p>
+    {% if pesel_status == 'poprawny' %}
+        <p><strong>Data urodzenia:</strong> {{ date_of_birth|date:"d-m-Y" }}</p>
+        <p><strong>Płeć:</strong> {{ sex }}</p>
     {% else %}
-        <p><strong>Niepoprawność z:</strong>{{ wyjatki }}</p>
+        <p><strong>Niepoprawność z:</strong>{{ errors }}</p>
     {% endif %}
+    <a href="{% url 'check_pesel' %}">Sprawdź inny PESEL</a>
 </body>
 </html>

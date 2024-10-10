@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Wgrywanie pliku zakończone sukcesem</title>
+    <style>
+        pre {
+            white-space: pre-wrap;  
+            max-width: 80ch;  
+        }
+    </style>
+</head>
+<body>
+    <h1>Plik został wgrany pomyślnie!</h1>
+    <h2>Zmodyfikowany tekst:</h2>
+    <pre>{{ file_content }}</pre>
+    <a href="{% url 'upload_file' %}">Wróć do wgrywania plików</a>
+</body>
+</html>
